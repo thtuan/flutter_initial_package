@@ -1,6 +1,8 @@
 import 'package:base/sources/config.dart';
 import 'package:rxdart/rxdart.dart';
 
+// Start services
+
 class IamRoot {
   final Iterable<Service> enableServices;
   final bool debugMode;
@@ -13,34 +15,11 @@ class IamRoot {
       : debugMode = debugMode ?? false,
         super();
 
-  void initial() {}
-}
-
-abstract class ServiceData {
-  String get serviceDataName;
-}
-
-abstract class Service<T extends ServiceData> {
-  String get serviceName;
-
-  BehaviorSubject<T> get eventEmitter;
-}
-
-class AuthService extends Service {
-  @override
-  BehaviorSubject<Auth> get eventEmitter => BehaviorSubject<Auth>();
-
-  void emit() {
-    eventEmitter.add(Auth());
+  void initial() {
+    //Start services
+    for (var element in enableServices) {
+      element.initial();
+    }
   }
-
-  @override
-  String get serviceName => 'Auth Service';
 }
 
-class Auth extends ServiceData {
-  final bool isAuthenticated = false;
-
-  @override
-  String get serviceDataName => 'Auth Data';
-}
