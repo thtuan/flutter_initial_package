@@ -1,54 +1,43 @@
-import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
-
 
 /*
   Service is a component run under app life circle. We can get Service via AppService
  */
+
 abstract class ServiceState {
   String get serviceDataName;
 }
 
 abstract class Service<T extends ServiceState> {
   String get serviceName;
-  BehaviorSubject<T> get eventEmitter;
+
+  String get id;
+
+  BehaviorSubject<T> get _eventEmitter => BehaviorSubject<T>();
+
   T get state;
-  void initial(){}
-  void command();
-  void stop() {}
 
-}
+  void initial() {}
 
-abstract class AppService<T extends Service> {
-  static final List<Service> _runningServices = [];
-  static void configuration(List<Service> appServices) {
-    _runningServices.clear();
-    _runningServices.addAll(appServices);
-    for (var element in _runningServices) {
-      debugPrint('START SERVICE: ${element.serviceName}');
-      element.initial();
-    }
+  void emit(T state) {
+    _eventEmitter.add(state);
   }
 
+  void stop() {}
 }
+
+
 // Example
 class AuthService extends Service<AuthState> {
-  @override
-  BehaviorSubject<AuthState> get eventEmitter => BehaviorSubject<AuthState>();
-
-  void emit() {
-    eventEmitter.add(AuthState());
-  }
 
   @override
   String get serviceName => 'Auth Service';
 
   @override
-  void command() {
-  }
+  AuthState get state => AuthState();
 
   @override
-  AuthState get state => throw UnimplementedError();
+  String get id => 'auth';
 
 }
 
