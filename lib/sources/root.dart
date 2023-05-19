@@ -5,22 +5,18 @@ import 'package:logging/logging.dart';
 
 // Root tree
 
-class IamRoot extends InheritedWidget {
+class IamRoot {
   final bool debugMode;
   final Configuration configuration;
   final Widget app;
   final Map<String, Service> appServices = {};
-  final Function()? onInitApplication;
 
   IamRoot(
-      {super.key,
-      required this.configuration,
+      {required this.configuration,
       required List<Service> appServices,
       required this.app,
-      this.onInitApplication,
       bool? debugMode})
-      : debugMode = debugMode ?? false,
-        super(child: app) {
+      : debugMode = debugMode ?? false {
     initial(appServices);
   }
 
@@ -33,9 +29,8 @@ class IamRoot extends InheritedWidget {
       debugPrint('START SERVICE: ${service.serviceName}');
       appServices[service.id] = service;
       service.initial();
+      service.run();
     }
-
-    onInitApplication?.call();
   }
 
   void _initLogging(bool enable) {
@@ -47,20 +42,4 @@ class IamRoot extends InheritedWidget {
       debugPrint('${record.level.name}: ${record.time}: ${record.message}');
     });
   }
-
-  @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return false;
-  }
-
-  static IamRoot? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<IamRoot>();
-  }
-
-// static void stopService(BuildContext context, String id) {
-//   final root = context.dependOnInheritedWidgetOfExactType<IamRoot>();
-//   final service = root?.appServices[id];
-//   service?.stop();
-//   root?.appServices.remove(id);
-// }
 }
