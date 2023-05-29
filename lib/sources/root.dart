@@ -1,4 +1,3 @@
-import 'package:base/sources/config.dart';
 import 'package:base/sources/service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
@@ -7,15 +6,11 @@ import 'package:logging/logging.dart';
 
 class IamRoot {
   final bool debugMode;
-  final Configuration configuration;
   final Widget app;
   final Map<String, Service> appServices = {};
 
   IamRoot(
-      {required this.configuration,
-      required List<Service> appServices,
-      required this.app,
-      bool? debugMode})
+      {required List<Service> appServices, required this.app, bool? debugMode})
       : debugMode = debugMode ?? false {
     initial(appServices);
   }
